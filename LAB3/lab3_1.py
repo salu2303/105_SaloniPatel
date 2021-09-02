@@ -1,91 +1,87 @@
 {
  "cells": [
   {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Experiment 3"
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "776e417b",
    "metadata": {},
    "outputs": [],
    "source": [
     "import numpy as np\n",
     "from sklearn import datasets\n",
     "from sklearn.naive_bayes import GaussianNB\n",
-    "\n",
+    "from sklearn.preprocessing import LabelEncoder\n",
     "#Load dataset\n",
-    "iris = datasets.load_iris()"
+    "wine = datasets.load_wine()"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
-   "id": "8e3653a1",
+   "execution_count": 2,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Features:  ['sepal length (cm)', 'sepal width (cm)', 'petal length (cm)', 'petal width (cm)']\n",
-      "Labels:  ['setosa' 'versicolor' 'virginica']\n",
+      "Features:  ['alcohol', 'malic_acid', 'ash', 'alcalinity_of_ash', 'magnesium', 'total_phenols', 'flavanoids', 'nonflavanoid_phenols', 'proanthocyanins', 'color_intensity', 'hue', 'od280/od315_of_diluted_wines', 'proline']\n",
+      "Labels:  ['class_0' 'class_1' 'class_2']\n",
       "\n",
-      "Data shape:  (150, 4)\n",
+      "Data:  [[1.423e+01 1.710e+00 2.430e+00 ... 1.040e+00 3.920e+00 1.065e+03]\n",
+      " [1.320e+01 1.780e+00 2.140e+00 ... 1.050e+00 3.400e+00 1.050e+03]\n",
+      " [1.316e+01 2.360e+00 2.670e+00 ... 1.030e+00 3.170e+00 1.185e+03]\n",
+      " ...\n",
+      " [1.327e+01 4.280e+00 2.260e+00 ... 5.900e-01 1.560e+00 8.350e+02]\n",
+      " [1.317e+01 2.590e+00 2.370e+00 ... 6.000e-01 1.620e+00 8.400e+02]\n",
+      " [1.413e+01 4.100e+00 2.740e+00 ... 6.100e-01 1.600e+00 5.600e+02]]\n",
       "\n",
-      "Traget shape:  (150,)\n",
-      "\n",
-      "Data type:  <class 'numpy.ndarray'>\n",
-      "\n",
-      "New Data shape:  (100, 4)\n",
-      "\n",
-      "New Traget shape:  (100,)\n"
+      "Target:  [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n",
+      " 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n",
+      " 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2\n",
+      " 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2]\n"
      ]
     }
    ],
    "source": [
-    "print(\"Features: \", iris.feature_names)\n",
+    "# print the names of the features\n",
+    "print(\"Features: \", wine.feature_names)\n",
     "\n",
     "# print the label type of wine(class_0, class_1, class_2)\n",
-    "print(\"Labels: \", iris.target_names)\n",
+    "print(\"Labels: \", wine.target_names)\n",
     "\n",
     "# print data(feature)shape\n",
-    "print(\"\\nData shape: \",iris.data.shape)\n",
-    "#print data(target)shape\n",
-    "print(\"\\nTraget shape: \",iris.target.shape)\n",
+    "wine.data.shape\n",
     "\n",
-    "#print(\"\\nData: \",iris.data)\n",
-    "#print(\"\\nTarget: \",iris.target)\n",
-    "\n",
-    "print(\"\\nData type: \",type(iris.data))\n",
-    "\n",
-    "newdata = iris.data[50:,:]\n",
-    "newtarget = iris.target[50:]\n",
-    "\n",
-    "# print data(feature)shape\n",
-    "print(\"\\nNew Data shape: \",newdata.shape)\n",
-    "#print data(target)shape\n",
-    "print(\"\\nNew Traget shape: \",newtarget.shape)"
+    "print(\"\\nData: \",wine.data)\n",
+    "print(\"\\nTarget: \",wine.target)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
-   "id": "42fe0184",
+   "execution_count": 3,
    "metadata": {},
    "outputs": [],
    "source": [
     "from sklearn.model_selection import train_test_split\n",
     "\n",
     "#split data set into train and test sets\n",
-    "data_train, data_test, target_train, target_test = train_test_split(newdata,newtarget, test_size = 0.30, random_state = 5)"
+    "data_train, data_test, target_train, target_test = train_test_split(wine.data,\n",
+    "                        wine.target, test_size = 0.34, random_state = 105)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 7,
-   "id": "441e3673",
+   "execution_count": 4,
    "metadata": {},
    "outputs": [],
    "source": [
-    "import numpy as np\n",
     "gnb = GaussianNB()\n",
     "\n",
     "#Train the model using the training sets\n",
@@ -97,15 +93,14 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 8,
-   "id": "99501588",
+   "execution_count": 5,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "Accuracy: 0.9\n"
+      "Accuracy: 0.9508196721311475\n"
      ]
     }
    ],
@@ -119,39 +114,39 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
-   "id": "f3fad2ae",
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
      "data": {
       "text/plain": [
-       "array([[16,  1],\n",
-       "       [ 2, 11]], dtype=int64)"
+       "array([[22,  0,  0],\n",
+       "       [ 2, 21,  1],\n",
+       "       [ 0,  0, 15]], dtype=int64)"
       ]
      },
-     "execution_count": 9,
+     "execution_count": 6,
      "metadata": {},
      "output_type": "execute_result"
     }
    ],
    "source": [
+    "#Import confusion_matrix from scikit-learn metrics module for confusion_matrix\n",
     "from sklearn.metrics import confusion_matrix\n",
-    "confusion_matrix(target_test, target_pred)\n"
+    "confusion_matrix(target_test, target_pred)"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
-   "id": "476e4af0",
+   "execution_count": 7,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "precision: 0.8888888888888888\n",
-      "recall: 0.9411764705882353\n"
+      "precision: [0.91666667 1.         0.9375    ]\n",
+      "recall: [1.    0.875 1.   ]\n"
      ]
     }
    ],
@@ -159,8 +154,8 @@
     "from sklearn.metrics import precision_score\n",
     "from sklearn.metrics import recall_score\n",
     "\n",
-    "precision = precision_score(target_test, target_pred)\n",
-    "recall = recall_score(target_test, target_pred)\n",
+    "precision = precision_score(target_test, target_pred, average=None)\n",
+    "recall = recall_score(target_test, target_pred, average=None)\n",
     "\n",
     "print('precision: {}'.format(precision))\n",
     "print('recall: {}'.format(recall))"
@@ -169,7 +164,6 @@
   {
    "cell_type": "code",
    "execution_count": null,
-   "id": "038bab8b",
    "metadata": {},
    "outputs": [],
    "source": []
@@ -191,9 +185,9 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.8.9"
+   "version": "3.7.4"
   }
  },
  "nbformat": 4,
- "nbformat_minor": 5
+ "nbformat_minor": 2
 }
